@@ -26,7 +26,9 @@
     </div>
 </template>
 <script setup lang="ts">
-import hljs from 'highlight.js';
+import hljs from 'highlight.js/lib/core';
+import json from 'highlight.js/lib/languages/json';
+hljs.registerLanguage('json', json);
 import 'highlight.js/styles/atom-one-dark.css'; // 你可以选择其他样式
 import { ref } from 'vue';
 // 格式化

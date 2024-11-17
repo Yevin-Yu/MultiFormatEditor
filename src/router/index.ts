@@ -1,7 +1,6 @@
 // src/router/index.ts
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
-
-import JsonPage from '../views/json.vue';
+const JsonPage = () => import('../views/json.vue');
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
