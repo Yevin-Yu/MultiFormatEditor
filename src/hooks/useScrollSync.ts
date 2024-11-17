@@ -1,5 +1,5 @@
 // useScrollSync.ts
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { onMounted, onBeforeUnmount } from 'vue';
 
 export function useScrollSync(ref1: any, ref2: any) {
   const scrollHandler1 = () => {

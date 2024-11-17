@@ -15,10 +15,12 @@
             <button v-if="formattedJson && !error" @click="clickDownload">下载 JSON</button>
             <span v-if="error" style="color:red">{{ error }}</span>
             <!-- 格式化内容 -->
-            <div class="json-item-output" :key="keyWords">
-                <div contenteditable="true" disabled class="json-output" ref="div1" v-html="formattedJson"></div>
-                <div contenteditable="true" v-show="isShowContrast" class="json-output" ref="div2"
-                    v-html="formattedJson2"></div>
+            <div class="json-item-output">
+                <button v-if="jsonData" @click="copyToClipboard(jsonData)" :class="{ 'is': !isShowContrast }"
+                    class="left">📋</button>
+                <button v-if="jsonData2" @click="copyToClipboard(jsonData2)" class="right">📋</button>
+                <div disabled class="json-output" ref="div1" v-html="formattedJson"></div>
+                <div v-show="isShowContrast" class="json-output" ref="div2" v-html="formattedJson2"></div>
             </div>
         </div>
     </div>
@@ -27,15 +29,14 @@
 import hljs from 'highlight.js';
 import 'highlight.js/styles/atom-one-dark.css'; // 你可以选择其他样式
 import { ref } from 'vue';
-const keyWords = ref(new Date().getTime())
 // 格式化
 const jsonInput = ref<string>('');
-const jsonData = ref<any>({});
+const jsonData = ref<any>('');
 const formattedJson = ref<string>('');
 // 对比
 const isShowContrast = ref(false)
 const jsonInput2 = ref<string>('');
-const jsonData2 = ref<any>({});
+const jsonData2 = ref<any>('');
 const formattedJson2 = ref<string>('');
 // 错误信息
 const error = ref<string>('');
@@ -43,6 +44,8 @@ const error = ref<string>('');
 const formatJson = () => {
     error.value = '';
     if (!jsonInput.value && !jsonInput2.value) {
+        jsonData.value = ''
+        jsonData2.value = ''
         formattedJson.value = ''
         formattedJson2.value = ''
         return
@@ -58,10 +61,11 @@ const formatJson = () => {
             jsonData2.value = JSON.stringify(jsonObject2, null, 2);
             formattedJson2.value = hljs.highlight(jsonData2.value, { language: 'json' }).value;
         }
-        keyWords.value = new Date().getTime()
     } catch (e) {
         console.log(e)
         error.value = '无效的 JSON 字符串';
+        jsonData.value = ''
+        jsonData2.value = ''
         formattedJson.value = '';
         formattedJson2.value = ''
     }
@@ -73,7 +77,7 @@ const clickDownload = () => {
         downloadJson(jsonData2.value, 'formatted2.json')
     }
 }
-const downloadJson = (data, name) => {
+const downloadJson = (data: any, name: string) => {
     if (!data) return
     const blob = new Blob([data], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -89,6 +93,11 @@ import { useScrollSync } from '../hooks/useScrollSync';
 const div1 = ref<HTMLDivElement | null>(null);
 const div2 = ref<HTMLDivElement | null>(null);
 useScrollSync(div1, div2);
+
+// 复制
+const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text)
+};
 </script>
 
 
@@ -119,8 +128,12 @@ useScrollSync(div1, div2);
         outline: none;
         border-radius: 4px;
         cursor: pointer;
+        box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);
+        font-size: 12px;
+        color: #333;
 
         &:hover {
+            box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5) inset;
             background-color: var(--accent-100);
             color: var(--text-200);
         }
@@ -154,8 +167,32 @@ useScrollSync(div1, div2);
     .json-item-output {
         width: 100%;
         display: flex;
-        height: calc(100% - 378px);
+        height: calc(100% - 372px);
         position: relative;
+
+        .left,
+        .right {
+            position: absolute;
+            top: 10px;
+            right: calc(50% + 12px);
+            z-index: 999;
+            padding: 2px;
+            font-size: 20px;
+            background-color: var(--primary-200);
+            box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);
+
+            &:hover {
+                box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5) inset;
+            }
+        }
+
+        .left.is {
+            right: 12px;
+        }
+
+        .right {
+            right: 12px;
+        }
     }
 
     .json-output {
