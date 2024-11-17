@@ -3,7 +3,7 @@
   <Header></Header>
   <div class="container">
     <!-- 侧边栏 -->
-    <Aside></Aside>
+    <Aside v-if="settings.isSHowAuthor"></Aside>
     <!-- 内容区 -->
     <router-view class="main-view"></router-view>
   </div>
@@ -11,6 +11,10 @@
 <script setup lang="ts">
 import Header from './components/Header.vue'
 import Aside from './components/Aside.vue'
+import { storeToRefs } from "pinia";
+// 引入设置
+import { useSettingsStore } from './stores/settingsStore';
+const { settings } = storeToRefs(useSettingsStore());
 </script>
 
 
@@ -27,5 +31,6 @@ import Aside from './components/Aside.vue'
   flex: 1;
   margin: 18px;
   border-radius: 12px;
+  width: calc(100%  - 320px);
 }
 </style>

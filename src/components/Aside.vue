@@ -44,6 +44,7 @@ const socialLinks = defaultSocialLinks;
     color: var(--text-200);
     text-align: center;
     color: var(--text-200);
+    overflow: auto;
 }
 
 p {

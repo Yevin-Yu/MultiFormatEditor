@@ -9,6 +9,7 @@
                 <li v-for="link in links" :key="link.name">
                     <router-link :to="link.path">{{ link.name }}</router-link>
                 </li>
+                <li @click="settings.isSHowAuthor = !settings.isSHowAuthor">联系作者</li>
             </ul>
         </nav>
     </header>
@@ -34,6 +35,11 @@ const defaultLinks: Link[] = [
 
 const title = props.title || '耶温-多格式编辑';
 const links = props.links || defaultLinks;
+
+// 引入设置
+import { storeToRefs } from "pinia";
+import { useSettingsStore } from '../stores/settingsStore';
+const { settings } = storeToRefs(useSettingsStore());
 </script>
 
 <style scoped>
